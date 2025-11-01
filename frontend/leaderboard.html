@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeVerse Leaderboard</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #38bdf8;
+    }
+    #updated {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      max-width: 600px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+    th, td {
+      text-align: center;
+      padding: 12px;
+      border-bottom: 1px solid #334155;
+    }
+    th {
+      background: #0ea5e9;
+      color: white;
+    }
+    tr:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏆 CodeVerse Leaderboard</h1>
+  <div id="updated">Loading data...</div>
+
+  <table id="leaderboardTable">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboardBody">
+      <tr><td colspan="3">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    const API_URL = "https://horrible-toad-4jpx75jvw7ghqvvp-3000.app.github.dev/leaderboard";
+
+    async function loadLeaderboard() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        const tbody = document.getElementById("leaderboardBody");
+        const updated = document.getElementById("updated");
+
+        tbody.innerHTML = "";
+        data.forEach((player, index) => {
+          const row = `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${player.username}</td>
+              <td>${player.score}</td>
+            </tr>`;
+          tbody.innerHTML += row;
+        });
+
+        const now = new Date().toLocaleTimeString();
+        updated.textContent = "Last updated: " + now;
+      } catch (error) {
+        console.error("Error loading leaderboard:", error);
+        document.getElementById("updated").textContent = "⚠️ Error fetching data";
+      }
+    }
+
+    // Load immediately and refresh every 5s
+    loadLeaderboard();
+    setInterval(loadLeaderboard, 5000);
+  </script>
+</body>
+</html>

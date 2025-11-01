@@ -1,11 +1,41 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => res.send('CodeVerse backend running ✅'));
+// In-memory leaderboard data
+let leaderboard = [
+  { username: "Alice", score: 95 },
+  { username: "Bob", score: 88 },
+  { username: "Charlie", score: 82 }
+];
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+// GET route — return leaderboard
+app.get("/leaderboard", (req, res) => {
+  res.json(leaderboard);
+});
 
+// POST route — add new score
+app.post("/leaderboard", (req, res) => {
+  const { username, score } = req.body;
+  if (!username || typeof score !== "number") {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  leaderboard.push({ username, score });
+  leaderboard.sort((a, b) => b.score - a.score);
+  res.json({
+    message: "Score added!",
+    leaderboard
+  });
+});
+
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`✅ Server running on port ${PORT}`)
+);
