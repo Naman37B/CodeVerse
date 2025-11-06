@@ -1,6 +1,6 @@
 function signup() {
-  const username = document.querySelector(".username").value;
-  const password = document.querySelector(".password").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
   fetch("http://localhost:3000/signup", {
     method: "POST",
@@ -11,14 +11,14 @@ function signup() {
     .then(data => {
       document.getElementById("msg").innerText = data.message;
 
-      document.querySelector(".username").value = "";
-      document.querySelector(".password").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
     });
 }
 
 function login() {
-  const username = document.querySelector(".username").value;
-  const password = document.querySelector(".password").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
   fetch("http://localhost:3000/login", {
     method: "POST",
@@ -29,7 +29,13 @@ function login() {
     .then(data => {
       document.getElementById("msg").innerText = data.message;
 
-      document.querySelector(".username").value = "";
-      document.querySelector(".password").value = "";
+      if (data.message === "Login successful!") {
+        setTimeout(() => {
+          window.location.href = "battle.html"; 
+        }, 1000);
+      }
+
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
     });
 }
