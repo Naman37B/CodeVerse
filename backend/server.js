@@ -1,41 +1,41 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
+const express = require('express');
+const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
+
+// Create HTTP server and bind Socket.IO to it
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*', // allow frontend access
+    methods: ['GET', 'POST']
+  }
+});
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// In-memory leaderboard data
-let leaderboard = [
-  { username: "Alice", score: 95 },
-  { username: "Bob", score: 88 },
-  { username: "Charlie", score: 82 }
-];
+// Routes
+const leaderboardRoutes = require('./routes/leaderboard');
+const submissionRoutes = require('./routes/submissions');
 
-// GET route — return leaderboard
-app.get("/leaderboard", (req, res) => {
-  res.json(leaderboard);
+// Attach io to app so routes can emit events
+app.set('io', io);
+
+app.use('/leaderboard', leaderboardRoutes);
+app.use('/submissions', submissionRoutes);
+
+// Socket.IO connection listener
+io.on('connection', (socket) => {
+  console.log('🟢 New WebSocket client connected');
+  socket.on('disconnect', () => console.log('🔴 Client disconnected'));
 });
 
-// POST route — add new score
-app.post("/leaderboard", (req, res) => {
-  const { username, score } = req.body;
-  if (!username || typeof score !== "number") {
-    return res.status(400).json({ error: "Invalid input" });
-  }
-
-  leaderboard.push({ username, score });
-  leaderboard.sort((a, b) => b.score - a.score);
-  res.json({
-    message: "Score added!",
-    leaderboard
-  });
+// Start the server
+server.listen(PORT, () => {
+  console.log(`✅ Server + WebSocket running at http://localhost:${PORT}`);
 });
-
-app.listen(PORT, "0.0.0.0", () =>
-  console.log(`✅ Server running on port ${PORT}`)
-);

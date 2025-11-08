@@ -1,0 +1,36 @@
+[
+  {
+    "username": "Alice",
+    "score": 350,
+    "problems": {
+      "A": 100,
+      "B": 150,
+      "C": 100,
+      "D": 0
+    },
+    "solved": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false
+    },
+    "lastSubmission": "2025-11-05T12:39:05.682Z"
+  },
+  {
+    "username": "Bob",
+    "score": 160,
+    "problems": {
+      "A": 0,
+      "B": 0,
+      "C": 160,
+      "D": 0
+    },
+    "solved": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false
+    },
+    "lastSubmission": "2025-11-05T12:37:51.888Z"
+  }
+]

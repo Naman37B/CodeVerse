@@ -1,46 +1,96 @@
-const express = require('express');
-const axios = require('axios'); // we'll install axios in the next step if not present
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const router = express.Router();
 
-/**
- * POST /submissions/submit
- * Body: { username: string, code: string }
- *
- * This route simulates judging the submission. If judged "accepted",
- * it sends a POST to /leaderboard to add/update the player's score.
- *
- * NOTE: This is a simple simulated judge. Replace the // JUDGE LOGIC //
- * block with your real judging/execution when you integrate the arena.
- */
-router.post('/submit', async (req, res) => {
-  try {
-    const { username, code } = req.body;
-    if (!username || typeof code !== 'string') {
-      return res.status(400).json({ error: 'Invalid submission payload' });
-    }
+const dataFile = path.join(__dirname, "../leaderboardData.json");
 
-    // ----- SIMULATED JUDGE LOGIC -----
-    // Replace this with real evaluation. For demo, we'll accept every submission
-    // and assign a score. You can change scoring rules here.
-    const accepted = true;                    // whether judge accepted the submission
-    const score = Math.floor(Math.random() * 50) + 50; // random score 50-99 for demo
-    // ----------------------------------
+// ✅ Contest configuration
+const PROBLEM_POINTS = {
+  A: 100,
+  B: 150,
+  C: 200,
+  D: 250,
+};
+const PENALTY = 20; // penalty for wrong submission
 
-    if (accepted) {
-      // Post result to leaderboard endpoint on the same server
-      // Use the container-local address so it works both locally and in Codespaces
-      const leaderboardUrl = process.env.LEADERBOARD_URL || 'http://localhost:3000/leaderboard';
+// Utility functions
+function readLeaderboard() {
+  if (!fs.existsSync(dataFile)) return [];
+  return JSON.parse(fs.readFileSync(dataFile, "utf8"));
+}
 
-      await axios.post(leaderboardUrl, { username, score });
+function writeLeaderboard(data) {
+  fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+}
 
-      return res.json({ message: 'Submission accepted', username, score });
-    } else {
-      return res.json({ message: 'Submission rejected' });
-    }
-  } catch (err) {
-    console.error('Submission error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+// 🧠 POST /submissions/submit
+router.post("/submit", (req, res) => {
+  const { username, problem, result } = req.body;
+
+  if (!username || !problem || !result) {
+    return res
+      .status(400)
+      .json({ error: "username, problem, and result are required" });
   }
+
+  const leaderboard = readLeaderboard();
+  let user = leaderboard.find((u) => u.username === username);
+  const problemScore = PROBLEM_POINTS[problem] || 0;
+  const currentTime = new Date().toISOString();
+
+  if (!user) {
+    user = {
+      username,
+      score: 0,
+      problems: {
+        A: 0,
+        B: 0,
+        C: 0,
+        D: 0,
+      },
+      solved: {
+        A: false,
+        B: false,
+        C: false,
+        D: false,
+      },
+      lastSubmission: currentTime,
+    };
+    leaderboard.push(user);
+  }
+
+  // 🚫 If already solved, ignore all future submissions for that problem
+  if (user.solved[problem]) {
+    return res.json({ message: "Already solved — no changes made", leaderboard });
+  }
+
+  // 🟥 Wrong submission → apply penalty if not solved yet
+  if (result === "wrong") {
+    user.problems[problem] -= PENALTY;
+    user.score -= PENALTY;
+    user.lastSubmission = currentTime;
+  }
+
+  // 🟩 Correct submission → award points minus previous penalties
+  else if (result === "correct") {
+    const gained = problemScore - Math.max(user.problems[problem], 0);
+    user.problems[problem] += gained;
+    user.score += gained;
+    user.solved[problem] = true; // lock this problem now
+    user.lastSubmission = currentTime;
+  }
+
+  // Sort leaderboard (by score, then by earliest submission)
+  leaderboard.sort((a, b) => {
+    if (b.score === a.score) {
+      return new Date(a.lastSubmission) - new Date(b.lastSubmission);
+    }
+    return b.score - a.score;
+  });
+
+  writeLeaderboard(leaderboard);
+  res.json({ message: "Submission processed", leaderboard });
 });
 
 module.exports = router;
