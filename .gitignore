@@ -8,6 +8,7 @@ yarn-error.log*
 
 # Environment files
 .env
+.vscode
 
 # OS/system files
 .DS_Store
