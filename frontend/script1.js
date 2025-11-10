@@ -1,18 +1,16 @@
 function signup() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
+  const handle = document.getElementById("handle").value;
 
-  fetch("http://localhost:3000/signup", {
+  fetch("http://localhost:5000/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ username, password, handle })
   })
     .then(res => res.json())
     .then(data => {
       document.getElementById("msg").innerText = data.message;
-
-      document.getElementById("username").value = "";
-      document.getElementById("password").value = "";
     });
 }
 
@@ -20,7 +18,7 @@ function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  fetch("http://localhost:3000/login", {
+  fetch("http://localhost:5000/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -28,14 +26,12 @@ function login() {
     .then(res => res.json())
     .then(data => {
       document.getElementById("msg").innerText = data.message;
-
       if (data.message === "Login successful!") {
+        localStorage.setItem("username", username);
+        localStorage.setItem("handle", data.handle);
         setTimeout(() => {
-          window.location.href = "battle.html"; 
-        }, 1000);
+          window.location.href = "lobby.html";
+        }, 800);
       }
-
-      document.getElementById("username").value = "";
-      document.getElementById("password").value = "";
     });
 }

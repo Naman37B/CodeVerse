@@ -1,11 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nch</title>
-</head>
-<body>
-    <h1>NAMAN BANA KI NHI ABHI TAK</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeBattle Arena</title>
+    <link rel="stylesheet" href="battle.css" />
+  </head>
+  <body>
+    <canvas id="particleCanvas"></canvas>
+
+    <main class="battle-container">
+      <header>
+        <h1 class="title">Battle Arena</h1>
+        <div class="timer">⏳ <span id="countdown">60:00</span></div>
+      </header>
+
+      <div id="verdicts-box" class="verdicts">
+        <h3>🧩 Battle Progress</h3>
+        <table id="verdictTable">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Problem</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <section id="problem-section">
+        <h2>🔥 Your Problems</h2>
+        <div id="problems-container"></div>
+      </section>
+    </main>
+
+    <script src="battle.js"></script>
+  </body>
 </html>
