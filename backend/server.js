@@ -31,11 +31,11 @@ app.use('/submissions', submissionRoutes);
 
 // Socket.IO connection listener
 io.on('connection', (socket) => {
-  console.log('🟢 New WebSocket client connected');
-  socket.on('disconnect', () => console.log('🔴 Client disconnected'));
+  console.log('New WebSocket client connected');
+  socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
 // Start the server
 server.listen(PORT, () => {
-  console.log(`✅ Server + WebSocket running at http://localhost:${PORT}`);
+  console.log(`Server + WebSocket running at http://localhost:${PORT}`);
 });
