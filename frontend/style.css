@@ -1,0 +1,124 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Orbitron:wght@600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== Background with moving stars ===== */
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  overflow: hidden;
+  padding-top: 50px;
+}
+
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+}
+
+/* ===== Leaderboard Card ===== */
+h1 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2.5rem;
+  color: #7dd3fc;
+  text-align: center;
+  margin-bottom: 10px;
+  text-shadow: 0 0 15px rgba(125, 211, 252, 0.4);
+  z-index: 2;
+}
+
+#updated {
+  font-size: 0.95rem;
+  color: #bae6fd;
+  margin-bottom: 25px;
+  z-index: 2;
+}
+
+table {
+  border-collapse: collapse;
+  width: 80%;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(125, 211, 252, 0.15);
+  backdrop-filter: blur(15px);
+  z-index: 2;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+}
+
+th {
+  background: rgba(37, 99, 235, 0.3);
+  color: #e0f2fe;
+  font-weight: 600;
+  font-family: "Orbitron", sans-serif;
+  letter-spacing: 0.5px;
+}
+
+tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+tr.updated {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  transition: background-color 1s ease;
+}
+
+tr.updated.fade {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+tbody tr {
+  transition: all 0.5s ease;
+}
+
+/* ===== Floating glow animation ===== */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+table {
+  animation: float 5s ease-in-out infinite alternate;
+}
+
+/* ===== Subtle footer ===== */
+footer {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  text-align: center;
+  z-index: 2;
+}
+
+/* ===== Z-Index Fix for layering ===== */
+h1, #updated, table, footer {
+  position: relative;
+  z-index: 2;
+}

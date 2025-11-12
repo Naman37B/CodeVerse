@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodeVerse Leaderboard</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <canvas id="particleCanvas"></canvas>
     <h1>🏆 CodeVerse Leaderboard</h1>
     <div id="updated">Loading data...</div>
 
@@ -15,10 +16,9 @@
         <tr>
           <th>Rank</th>
           <th>Username</th>
-          <th>A</th>
-          <th>B</th>
-          <th>C</th>
-          <th>D</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
           <th>Total</th>
         </tr>
       </thead>
@@ -30,6 +30,6 @@
     </table>
 
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

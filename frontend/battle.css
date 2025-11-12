@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Orbitron:wght@600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  color: #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  z-index: 0;
+}
+
+/* Main card container */
+.battle-container {
+  position: relative;
+  width: 800px;
+  min-height: 600px;
+  padding: 40px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  z-index: 2;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  color: #7dd3fc;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+/* Align timer + leaderboard button */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.timer {
+  font-size: 1.4rem;
+  color: #a5f3fc;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ===== 🏆 Leaderboard Button Styling ===== */
+.btn.leaderboard-btn {
+  background: linear-gradient(135deg, #60a5fa, #818cf8);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(125, 211, 252, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn.leaderboard-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(125, 211, 252, 0.5);
+}
+
+/* Problem section */
+#problem-section {
+  text-align: left;
+}
+
+#problems-container {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.problem-card {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 15px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
+  transition: 0.3s;
+}
+.problem-card:hover {
+  transform: scale(1.02);
+  background: rgba(255,255,255,0.12);
+}
+
+.problem-card h3 {
+  color: #93c5fd;
+  margin-bottom: 5px;
+}
+.problem-card p {
+  color: #d1d5db;
+  font-size: 0.9rem;
+}
+
+.problem-links {
+  margin-top: 10px;
+}
+.problem-links a {
+  text-decoration: none;
+  color: #7dd3fc;
+  font-weight: 500;
+  margin-right: 15px;
+  transition: 0.2s;
+}
+.problem-links a:hover {
+  color: #a5f3fc;
+}
+
+.btn.end {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  margin-top: 30px;
+  transition: 0.3s;
+}
+.btn.end:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 25px rgba(239,68,68,0.4);
+}
+
+.verdicts {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 15px;
+  color: #dbeafe;
+}
+.verdicts table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+.verdicts th, .verdicts td {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 6px;
+}
+.status-solved {
+  color: #4ade80;
+  font-weight: bold;
+}
+.status-pending {
+  color: #facc15;
+}
