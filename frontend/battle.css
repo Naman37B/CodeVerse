@@ -62,6 +62,13 @@ header {
   margin-bottom: 25px;
 }
 
+/* Align timer + leaderboard button */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .timer {
   font-size: 1.4rem;
   color: #a5f3fc;
@@ -71,6 +78,26 @@ header {
   border: 1px solid rgba(255,255,255,0.1);
 }
 
+/* ===== 🏆 Leaderboard Button Styling ===== */
+.btn.leaderboard-btn {
+  background: linear-gradient(135deg, #60a5fa, #818cf8);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(125, 211, 252, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn.leaderboard-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(125, 211, 252, 0.5);
+}
+
+/* Problem section */
 #problem-section {
   text-align: left;
 }

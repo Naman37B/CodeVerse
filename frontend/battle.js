@@ -72,16 +72,13 @@ function displayProblems(problems) {
     const card = document.createElement("div");
     card.classList.add("problem-card");
 
+    // ✅ use number instead of index (backend now provides p.number = "1", "2", "3")
     card.innerHTML = `
-      <h3>${index + 1}. ${p.name}</h3>
+      <h3>Problem ${p.number}: ${p.name}</h3>
       <p>Rating: ${p.rating || "N/A"} | Tags: ${p.tags.join(", ")}</p>
       <div class="problem-links">
-        <a href="https://codeforces.com/problemset/problem/${p.contestId}/${
-      p.index
-    }" target="_blank">View Problem</a>
-        <a href="https://codeforces.com/problemset/submit/${p.contestId}/${
-      p.index
-    }" target="_blank">Submit</a>
+        <a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank">View Problem</a>
+        <a href="https://codeforces.com/problemset/submit/${p.contestId}/${p.index}" target="_blank">Submit</a>
       </div>
     `;
 
@@ -108,14 +105,14 @@ function updateTimer() {
   } else {
     clearInterval(timer);
     alert("⏰ Battle ended!");
-    window.location.href = "/results.html";
+    window.location.href = "/leaderboard.html";
   }
 }
 const timer = setInterval(updateTimer, 1000);
 
 const verdictTableBody = document.querySelector("#verdictTable tbody");
 
-// update verdicts every 10s
+// ==== UPDATE VERDICTS EVERY SECOND ====
 setInterval(async () => {
   try {
     const res = await fetch(`/battle/${roomCode}?t=${Date.now()}`);
@@ -124,15 +121,16 @@ setInterval(async () => {
     renderVerdicts(battle);
 
     if (battle.status === "finished") {
-      clearInterval(timer); // stop countdown
+      clearInterval(timer);
       alert("🏁 Contest ended! All problems solved!");
-      window.location.href = "/results.html";
+      window.location.href = "/leaderboard.html";
     }
   } catch (err) {
     console.error("Error updating verdicts:", err);
   }
-}, 1000); // check every 5s
+}, 1000);
 
+// ==== RENDER VERDICTS ====
 function renderVerdicts(battle) {
   verdictTableBody.innerHTML = "";
 
@@ -141,16 +139,16 @@ function renderVerdicts(battle) {
 
   if (!me) {
     verdictTableBody.innerHTML = `<tr><td colspan="3">❌ Your handle (${myHandle}) not found in this battle</td></tr>`;
-    console.warn("Handles in battle:", battle.players.map(p => p.handle));
+    console.warn("Handles in battle:", battle.players.map((p) => p.handle));
     return;
   }
 
-  battle.problems.forEach((problem) => {
+  battle.problems.forEach((problem, index) => {
     const solved = me.solved.includes(problem.name);
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${myHandle}</td>
-      <td>${problem.name}</td>
+      <td>Problem ${index + 1}</td> <!-- ✅ Now shows numeric problem ID -->
       <td class="${solved ? "status-solved" : "status-pending"}">
         ${solved ? "✅ Solved" : "⏳ Pending"}
       </td>
@@ -159,3 +157,10 @@ function renderVerdicts(battle) {
   });
 }
 
+// ==== 🏆 LEADERBOARD BUTTON ====
+const leaderboardBtn = document.getElementById("viewLeaderboard");
+if (leaderboardBtn) {
+  leaderboardBtn.addEventListener("click", () => {
+    window.open("/leaderboard.html", "_blank"); // opens leaderboard in new tab
+  });
+}
