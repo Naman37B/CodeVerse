@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Orbitron:wght@600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 * {
   margin: 0;
@@ -9,11 +9,11 @@
 body {
   height: 100vh;
   overflow: hidden;
-  font-family: "Poppins", sans-serif;
+  font-family: "Space Mono", monospace;
   color: #e5e7eb;
   display: flex;
   justify-content: center;
-  align-items: center;
+  background: radial-gradient(circle at 30% 20%, #0f172a, #020617);
 }
 
 #particleCanvas {
@@ -22,165 +22,215 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   z-index: 0;
 }
 
-/* Main card container */
-.battle-container {
-  position: relative;
-  width: 800px;
-  min-height: 600px;
-  padding: 40px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
-  text-align: center;
+.battle-wrapper {
+  width: 92%;
+  max-width: 1500px;
+  padding-top: 10px;
+  padding-bottom: 40px;
   z-index: 2;
-  animation: fadeIn 0.8s ease forwards;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+.page-title {
+  text-align: center;
+  font-family: "Space Mono";
+  font-size: 3rem;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  color: #9bd4ff;
+  text-shadow: 0 0 25px rgba(147, 197, 253, 0.55);
 }
 
-.title {
-  font-family: "Orbitron", sans-serif;
-  font-size: 2rem;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-  color: #7dd3fc;
+.battle-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-top: 100px;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-/* Align timer + leaderboard button */
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.timer {
-  font-size: 1.4rem;
-  color: #a5f3fc;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 8px 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* ===== 🏆 Leaderboard Button Styling ===== */
-.btn.leaderboard-btn {
-  background: linear-gradient(135deg, #60a5fa, #818cf8);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(125, 211, 252, 0.3);
-  transition: all 0.3s ease;
-}
-
-.btn.leaderboard-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(125, 211, 252, 0.5);
-}
-
-/* Problem section */
-#problem-section {
-  text-align: left;
+.left-panel {
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(147, 197, 253, 0.18);
+  min-height: 600px;
 }
 
 #problems-container {
-  margin-top: 15px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+  margin-top: 15px;
 }
 
 .problem-card {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 15px 20px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 0 10px rgba(255,255,255,0.05);
-  transition: 0.3s;
+  padding: 24px 26px;
+  min-height: 178px;
+  border-radius: 18px;
+  margin-top: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 -5px 14px rgba(0, 0, 0, 0.2);
+  transition: 0.25s ease;
 }
 .problem-card:hover {
-  transform: scale(1.02);
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-4px);
 }
 
-.problem-card h3 {
-  color: #93c5fd;
-  margin-bottom: 5px;
-}
-.problem-card p {
-  color: #d1d5db;
-  font-size: 0.9rem;
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
-.problem-links {
+.futuristic-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 6px 35px rgba(147, 197, 253, 0.18);
+}
+
+.timer-card {
+  padding: 25px 0;
+  text-align: center;
+}
+
+.big-timer {
+  width: 260px;
+  height: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.big-timer-ring {
+  width: 260px;
+  height: 260px;
+  transform: rotate(-90deg);
+}
+
+.big-timer-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 12px;
+}
+
+.big-timer-progress {
+  fill: none;
+  stroke: #7dd3fc;
+  stroke-width: 12px;
+  stroke-linecap: round;
+  stroke-dasharray: 690;
+  stroke-dashoffset: 690;
+  transition: stroke-dashoffset 1s linear;
+  filter: drop-shadow(0 4px 14px rgba(125, 211, 252, 0.25));
+}
+
+.big-timer-text {
+  position: absolute;
+  top: 116px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.3rem;
+  font-family: "Space Mono", monospace;
+  color: #d4efff;
+  text-shadow: 0 0 16px rgba(147, 197, 253, 0.8);
+}
+
+.big-timer-label {
+  text-align: center;
   margin-top: 10px;
-}
-.problem-links a {
-  text-decoration: none;
-  color: #7dd3fc;
-  font-weight: 500;
-  margin-right: 15px;
-  transition: 0.2s;
-}
-.problem-links a:hover {
-  color: #a5f3fc;
-}
-
-.btn.end {
-  background: linear-gradient(135deg, #ef4444, #f87171);
-  border: none;
-  border-radius: 12px;
-  padding: 12px 28px;
   font-size: 1rem;
-  color: white;
-  cursor: pointer;
-  margin-top: 30px;
-  transition: 0.3s;
-}
-.btn.end:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 25px rgba(239,68,68,0.4);
+  color: #aee3ff;
 }
 
 .verdicts {
-  margin-top: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  padding: 15px;
-  color: #dbeafe;
+  padding: 22px;
 }
+
+.verdicts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .verdicts table {
   width: 100%;
   border-collapse: collapse;
   text-align: center;
 }
-.verdicts th, .verdicts td {
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding: 6px;
+
+.verdicts th,
+.verdicts td {
+  padding: 14px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
+
 .status-solved {
   color: #4ade80;
   font-weight: bold;
 }
+
 .status-pending {
   color: #facc15;
+  font-weight: bold;
+}
+
+.btn.leaderboard-btn {
+  background: linear-gradient(135deg, #60a5fa, #818cf8);
+  padding: 10px 18px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 6px 25px rgba(96, 165, 250, 0.25);
+  transition: 0.25s ease;
+}
+.btn.leaderboard-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 35px rgba(125, 211, 252, 0.35);
+}
+
+.btn.leaderboard-btn.small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1100px) {
+  .battle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .right-panel {
+    width: 100%;
+    gap: 40px;
+  }
+}
+
+.problem-links a {
+  margin-top: 24px;
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: rgba(147, 197, 253, 0.12);
+  border: 1px solid rgba(147, 197, 253, 0.25);
+  color: #aee3ff;
+  text-decoration: none;
+  font-weight: 500;
+  margin-right: 12px;
+  transition: 0.2s;
+}
+
+.problem-links a:hover {
+  background: rgba(147, 197, 253, 0.2);
+  border-color: rgba(147, 197, 253, 0.35);
+  transform: translateY(-2px);
 }

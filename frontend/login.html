@@ -1,27 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Login | CodeVerse</title>
+    <link rel="stylesheet" href="auth.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeVerse-Login</title>
-    <link rel="stylesheet" href="style1.css" />
-</head>
+  <body>
+    <canvas id="particleCanvas"></canvas>
+    <h1 id="title">CodeVerse<span class="cursor">_</span></h1>
 
-<body>
-    <div class="text">
-        <h1>CodeVerse</h1>
-        <h3>Contest me mil!</h3>
-    </div>
-    <div class="box">
-                <input type="text" id="username" placeholder="Username" />
-                <input type="password" id="password" placeholder="Password" />
-                <button class="but" onclick="login()">Login</button><hr>
-                <a href="signup.html" class="signup">Create New Account</a>
-                <p id="msg"></p>
+    <div class="auth-box">
+      <div class="subtitle">Welcome Back • Sign in</div>
+
+      <div class="input-group">
+        <input
+          id="username"
+          type="text"
+          placeholder=" "
+          autocomplete="username"
+        />
+        <label for="username">Username</label>
+      </div>
+
+      <div class="input-group">
+        <input
+          id="password"
+          type="password"
+          placeholder=" "
+          autocomplete="current-password"
+        />
+        <label for="password">Password</label>
+      </div>
+
+      <button class="btn" onclick="login()">Log In</button>
+      <div class="small-link">
+        Don't have an account? <a href="signup.html">Create one</a>
+      </div>
+      <p id="msg"></p>
     </div>
 
     <script src="script1.js"></script>
-</body>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const text = "CodeVerse";
+        const el = document.getElementById("title");
+        const cursor = document.querySelector(".cursor");
+        el.textContent = "";
+        let i = 0;
+        function type() {
+          if (i < text.length) {
+            el.innerHTML =
+              text.slice(0, i + 1) + '<span class="cursor">_</span>';
+            i++;
+            setTimeout(type, 100);
+          }
+        }
+        type();
+      });
+    </script>
+
+    <script src="particles.js"></script>
+  </body>
 </html>

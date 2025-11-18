@@ -1,56 +1,20 @@
-// ==== PARTICLE BACKGROUND ====
-const canvas = document.getElementById("particleCanvas");
-const ctx = canvas.getContext("2d");
+const urlParams = new URLSearchParams(window.location.search);
+const roomFromURL = urlParams.get("room");
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+if (roomFromURL) {
+  localStorage.setItem("roomCode", roomFromURL);
 }
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
 
-let particles = [];
-const particleCount = 70;
-
-function initParticles() {
-  particles = [];
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 2 + 1,
-      speedX: (Math.random() - 0.5) * 0.3,
-      speedY: (Math.random() - 0.5) * 0.3,
-      opacity: Math.random() * 0.6 + 0.3,
-    });
-  }
-}
-initParticles();
-
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach((p) => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
-    ctx.fill();
-
-    p.x += p.speedX;
-    p.y += p.speedY;
-
-    if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-    if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-  });
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
-
-// ==== GET ROOM CODE & HANDLE ====
 const roomCode = localStorage.getItem("roomCode");
 const handle = localStorage.getItem("handle");
+
+if (!roomCode) {
+  alert("Room code missing. Please rejoin the battle.");
+  window.location.href = "/lobby.html";
+}
+
 const problemsContainer = document.getElementById("problems-container");
 
-// ==== FETCH SAME PROBLEMS FOR BOTH PLAYERS ====
 async function fetchBattleProblems() {
   try {
     const res = await fetch(`/problems/${roomCode}`);
@@ -60,25 +24,28 @@ async function fetchBattleProblems() {
     displayProblems(problems);
   } catch (error) {
     console.error("Error fetching battle problems:", error);
-    problemsContainer.innerHTML = `<p style="color:red;">Error loading problems. Please try again.</p>`;
+    problemsContainer.innerHTML = `<p style="color:red;">Error loading problems.</p>`;
   }
 }
 
-// ==== DISPLAY PROBLEMS ====
 function displayProblems(problems) {
   problemsContainer.innerHTML = "";
 
-  problems.forEach((p, index) => {
+  problems.forEach((p) => {
     const card = document.createElement("div");
     card.classList.add("problem-card");
 
-    // ✅ use number instead of index (backend now provides p.number = "1", "2", "3")
     card.innerHTML = `
       <h3>Problem ${p.number}: ${p.name}</h3>
       <p>Rating: ${p.rating || "N/A"} | Tags: ${p.tags.join(", ")}</p>
+
       <div class="problem-links">
-        <a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank">View Problem</a>
-        <a href="https://codeforces.com/problemset/submit/${p.contestId}/${p.index}" target="_blank">Submit</a>
+        <a href="https://codeforces.com/problemset/problem/${p.contestId}/${
+      p.index
+    }" target="_blank">View Problem</a>
+        <a href="https://codeforces.com/problemset/submit/${p.contestId}/${
+      p.index
+    }" target="_blank">Submit</a>
       </div>
     `;
 
@@ -86,33 +53,81 @@ function displayProblems(problems) {
   });
 }
 
-// ==== CALL FUNCTION ON PAGE LOAD ====
 fetchBattleProblems();
 
-// ==== TIMER (1 hour countdown) ====
+const TOTAL_SECONDS = 60 * 60;
 const countdown = document.getElementById("countdown");
-let timeLeft = 60 * 60; // 1 hour
+
+const battleStartKey = `battle_start_${roomCode}`;
+
+async function ensureBattleStart() {
+  try {
+    const res = await fetch(`/battle/${roomCode}?t=${Date.now()}`);
+    const battle = await res.json();
+
+    if (battle.status === "active") {
+      if (!localStorage.getItem(battleStartKey)) {
+        localStorage.setItem(battleStartKey, Date.now());
+      }
+    } else if (battle.status === "finished") {
+      localStorage.removeItem(battleStartKey);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+ensureBattleStart();
+
+let startTime = Number(localStorage.getItem(battleStartKey)) || Date.now();
+if (!localStorage.getItem(battleStartKey)) {
+  localStorage.setItem(battleStartKey, startTime);
+}
+
+const circle = document.querySelector(".big-timer-progress");
+const BIG_RADIUS = 110;
+const BIG_CIRC = 2 * Math.PI * BIG_RADIUS;
+
+if (circle) {
+  circle.style.strokeDasharray = `${BIG_CIRC}`;
+  circle.style.strokeDashoffset = `${BIG_CIRC}`;
+}
+
+let timeLeft = TOTAL_SECONDS;
+
+function updateTimerArc() {
+  const percent = Math.max(0, timeLeft / TOTAL_SECONDS);
+  circle.style.strokeDashoffset = BIG_CIRC * (1 - percent);
+}
 
 function updateTimer() {
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  timeLeft = TOTAL_SECONDS - elapsed;
+
+  if (timeLeft < 0) timeLeft = 0;
+
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
+
   countdown.textContent = `${String(minutes).padStart(2, "0")}:${String(
     seconds
   ).padStart(2, "0")}`;
 
-  if (timeLeft > 0) {
-    timeLeft--;
-  } else {
-    clearInterval(timer);
+  updateTimerArc();
+
+  if (timeLeft === 0) {
+    clearInterval(timerInterval);
+    localStorage.removeItem(battleStartKey);
     alert("⏰ Battle ended!");
-    window.location.href = "/leaderboard.html";
+    window.location.href = `/leaderboard.html?room=${roomCode}`;
   }
 }
-const timer = setInterval(updateTimer, 1000);
+
+updateTimer();
+const timerInterval = setInterval(updateTimer, 1000);
 
 const verdictTableBody = document.querySelector("#verdictTable tbody");
 
-// ==== UPDATE VERDICTS EVERY SECOND ====
 setInterval(async () => {
   try {
     const res = await fetch(`/battle/${roomCode}?t=${Date.now()}`);
@@ -121,46 +136,37 @@ setInterval(async () => {
     renderVerdicts(battle);
 
     if (battle.status === "finished") {
-      clearInterval(timer);
-      alert("🏁 Contest ended! All problems solved!");
-      window.location.href = "/leaderboard.html";
+      clearInterval(timerInterval);
+      localStorage.removeItem(battleStartKey);
+      alert("🏁 Contest ended!");
+      window.location.href = `/leaderboard.html?room=${roomCode}`;
     }
   } catch (err) {
-    console.error("Error updating verdicts:", err);
+    console.error("Verdict update error:", err);
   }
 }, 1000);
 
-// ==== RENDER VERDICTS ====
 function renderVerdicts(battle) {
   verdictTableBody.innerHTML = "";
 
   const myHandle = handle;
   const me = battle.players.find((p) => p.handle === myHandle);
 
-  if (!me) {
-    verdictTableBody.innerHTML = `<tr><td colspan="3">❌ Your handle (${myHandle}) not found in this battle</td></tr>`;
-    console.warn("Handles in battle:", battle.players.map((p) => p.handle));
-    return;
-  }
-
-  battle.problems.forEach((problem, index) => {
+  battle.problems.forEach((problem, idx) => {
     const solved = me.solved.includes(problem.name);
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${myHandle}</td>
-      <td>Problem ${index + 1}</td> <!-- ✅ Now shows numeric problem ID -->
-      <td class="${solved ? "status-solved" : "status-pending"}">
-        ${solved ? "✅ Solved" : "⏳ Pending"}
-      </td>
+
+    verdictTableBody.innerHTML += `
+      <tr>
+        <td>${myHandle}</td>
+        <td>Problem ${idx + 1}</td>
+        <td class="${solved ? "status-solved" : "status-pending"}">
+          ${solved ? "✅ Solved" : "⏳ Pending"}
+        </td>
+      </tr>
     `;
-    verdictTableBody.appendChild(row);
   });
 }
 
-// ==== 🏆 LEADERBOARD BUTTON ====
-const leaderboardBtn = document.getElementById("viewLeaderboard");
-if (leaderboardBtn) {
-  leaderboardBtn.addEventListener("click", () => {
-    window.open("/leaderboard.html", "_blank"); // opens leaderboard in new tab
-  });
-}
+document.getElementById("viewLeaderboard").addEventListener("click", () => {
+  window.open(`/leaderboard.html?room=${roomCode}`, "_blank");
+});

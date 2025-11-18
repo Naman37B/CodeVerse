@@ -3,44 +3,64 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeBattle Arena</title>
+    <title>Battle | CodeVerse</title>
     <link rel="stylesheet" href="battle.css" />
   </head>
+
   <body>
     <canvas id="particleCanvas"></canvas>
 
-    <main class="battle-container">
-      <header>
-        <h1 class="title">Battle Arena</h1>
-        <div class="header-right">
-          <div class="timer">⏳ <span id="countdown">60:00</span></div>
+    <main class="battle-wrapper">
+      <h1 class="page-title">Battle Arena</h1>
 
-          <!-- 🏆 View Leaderboard Button -->
-          <button id="viewLeaderboard" class="btn leaderboard-btn">
-            🏆 View Leaderboard
-          </button>
-        </div>
-      </header>
+      <div class="battle-grid">
+        <section id="problem-section" class="left-panel">
+          <h2>🔥 Your Problems</h2>
+          <div id="problems-container"></div>
+        </section>
 
-      <div id="verdicts-box" class="verdicts">
-        <h3>🧩 Battle Progress</h3>
-        <table id="verdictTable">
-          <thead>
-            <tr>
-              <th>Player</th>
-              <th>Problem</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <section class="right-panel">
+          <div class="timer-card futuristic-card">
+            <div class="big-timer">
+              <svg class="big-timer-ring" viewBox="0 0 260 260">
+                <circle class="big-timer-bg" cx="130" cy="130" r="110"></circle>
+                <circle
+                  class="big-timer-progress"
+                  cx="130"
+                  cy="130"
+                  r="110"
+                ></circle>
+              </svg>
+
+              <div class="big-timer-text" id="countdown">60:00</div>
+              <div class="big-timer-label">Time Remaining</div>
+            </div>
+          </div>
+
+          <div id="verdicts-box" class="verdicts futuristic-card">
+            <div class="verdicts-header">
+              <h3>Battle Progress</h3>
+              <button id="viewLeaderboard" class="btn leaderboard-btn small">
+                View Leaderboard
+              </button>
+            </div>
+
+            <table id="verdictTable">
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Problem</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
       </div>
-
-      <section id="problem-section">
-        <h2>🔥 Your Problems</h2>
-        <div id="problems-container"></div>
-      </section>
     </main>
+
+    <script src="particles.js"></script>
 
     <script src="battle.js"></script>
   </body>

@@ -1,15 +1,18 @@
-// ===== SOCKET.IO + API CONNECTION =====
 const socket = io("http://localhost:5000");
-const API_URL = "http://localhost:5000/leaderboard";
 
-// === Function to safely get problem score (supports 1/2/3 or A/B/C keys) ===
+const urlParams = new URLSearchParams(window.location.search);
+const roomCode = urlParams.get("room");
+const isRoomMode = !!roomCode;
+
+const API_URL = isRoomMode
+  ? `http://localhost:5000/battle/${roomCode}`
+  : "/leaderboard";
+
 function getProblemScore(problems, key) {
   if (!problems) return 0;
 
-  // Check numeric keys first
   if (problems[key] !== undefined) return problems[key];
 
-  // Fallback for old keys A/B/C
   const mapping = { 1: "A", 2: "B", 3: "C" };
   const altKey = mapping[key];
   if (altKey && problems[altKey] !== undefined) return problems[altKey];
@@ -17,34 +20,92 @@ function getProblemScore(problems, key) {
   return 0;
 }
 
-// === Function to load & render leaderboard ===
+function adaptBattleToLeaderboard(battle) {
+  if (!battle || !battle.players) return [];
+
+  const POINTS_MAP = [100, 150, 200];
+  const PENALTY_AMOUNT = 20;
+
+  return battle.players
+    .map((player) => {
+      const problems = {};
+      let totalScore = 0;
+
+      battle.problems.forEach((prob, idx) => {
+        const pNum = (idx + 1).toString();
+        const basePoints = POINTS_MAP[idx] || 0;
+
+        const penaltyCount = player.penalties[prob.name] || 0;
+
+        if (player.solved.includes(prob.name)) {
+          const penaltyDeduction = penaltyCount * PENALTY_AMOUNT;
+          const finalScore = Math.max(basePoints - penaltyDeduction, 0);
+
+          problems[pNum] = finalScore;
+          totalScore += finalScore;
+        } else {
+          const cumulativePenalty = penaltyCount * PENALTY_AMOUNT;
+          problems[pNum] = -cumulativePenalty;
+          totalScore -= cumulativePenalty;
+        }
+      });
+
+      return {
+        username: player.username,
+        problems: problems,
+        score: totalScore,
+      };
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
 async function loadLeaderboard() {
   try {
     const response = await fetch(API_URL);
     const data = await response.json();
-    renderLeaderboard(data);
+
+    if (isRoomMode) {
+      const leaderboardData = adaptBattleToLeaderboard(data);
+      renderLeaderboard(leaderboardData);
+    } else {
+      const tbody = document.getElementById("leaderboardBody");
+      tbody.innerHTML =
+        '<tr><td colspan="7">Global Leaderboard is now disabled. Please join a battle room.</td></tr>';
+      document.getElementById("updated").textContent =
+        "Global Leaderboard removed.";
+    }
   } catch (error) {
-    console.error("⚠️ Error loading leaderboard:", error);
-    document.getElementById("updated").textContent = "⚠️ Error fetching data";
+    console.error("Error loading leaderboard:", error);
+    document.getElementById("updated").textContent =
+      "Error fetching data or room not found";
   }
 }
 
-// === Function to render leaderboard ===
 function renderLeaderboard(data) {
   const tbody = document.getElementById("leaderboardBody");
   const updated = document.getElementById("updated");
 
   tbody.innerHTML = "";
 
+  if (isRoomMode) {
+    const title = document.querySelector("h1");
+    if (title) title.textContent = `Leaderboard`;
+  } else {
+    tbody.innerHTML =
+      '<tr><td colspan="7">Global Leaderboard is now disabled. Please join a battle room.</td></tr>';
+    document.getElementById("updated").textContent =
+      "Global Leaderboard removed.";
+    return;
+  }
+
   data.forEach((player, index) => {
     const username = player.username;
     const problems = player.problems || {};
     const score = player.score || 0;
 
-    // 🧩 Support numeric 1,2,3 or old A,B,C keys
-    const score1 = getProblemScore(problems, "1");
-    const score2 = getProblemScore(problems, "2");
-    const score3 = getProblemScore(problems, "3");
+    const score1 = problems["1"] !== undefined ? problems["1"] : 0;
+    const score2 = problems["2"] !== undefined ? problems["2"] : 0;
+    const score3 = problems["3"] !== undefined ? problems["3"] : 0;
 
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -62,69 +123,26 @@ function renderLeaderboard(data) {
   updated.textContent = "Last updated: " + now;
 }
 
-// === Initial Load ===
 loadLeaderboard();
 
-// === Real-Time WebSocket Updates ===
 socket.on("connect", () => {
-  console.log("🟢 Connected to server");
+  console.log("Connected to server");
 });
 
-socket.on("leaderboardUpdated", (data) => {
-  console.log("⚡ Real-time update received!");
-  renderLeaderboard(data);
-});
+if (isRoomMode) {
+  socket.on("battleUpdate", (data) => {
+    if (data.roomCode === roomCode) {
+      console.log("Room update received!");
+      loadLeaderboard();
+    }
+  });
+  socket.on("battleFinished", (data) => {
+    if (data.roomCode === roomCode) {
+      loadLeaderboard();
+    }
+  });
+}
 
 socket.on("disconnect", () => {
-  console.log("🔴 Disconnected from server");
+  console.log("Disconnected from server");
 });
-
-// ===== STAR PARTICLE BACKGROUND =====
-const canvas = document.getElementById("particleCanvas");
-if (canvas) {
-  const ctx = canvas.getContext("2d");
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
-
-  let particles = [];
-  const particleCount = 70;
-
-  function initParticles() {
-    particles = [];
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2 + 1,
-        speedX: (Math.random() - 0.5) * 0.3,
-        speedY: (Math.random() - 0.5) * 0.3,
-        opacity: Math.random() * 0.6 + 0.3,
-      });
-    }
-  }
-  initParticles();
-
-  function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach((p) => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
-      ctx.fill();
-
-      p.x += p.speedX;
-      p.y += p.speedY;
-
-      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-    });
-    requestAnimationFrame(animateParticles);
-  }
-
-  animateParticles();
-}

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Orbitron:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 * {
   margin: 0;
@@ -6,18 +6,16 @@
   box-sizing: border-box;
 }
 
-/* ===== Background with moving stars ===== */
 body {
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  font-family: "Space Mono", monospace;
   color: #e5e7eb;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  padding-top: 60px;
   min-height: 100vh;
-  overflow: hidden;
-  padding-top: 50px;
+  overflow-x: hidden;
+  background: transparent;
 }
 
 #particleCanvas {
@@ -26,18 +24,21 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    #0f172a,
+    #020617
+  );
   z-index: 0;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
 }
 
-/* ===== Leaderboard Card ===== */
 h1 {
-  font-family: "Orbitron", sans-serif;
-  font-size: 2.5rem;
-  color: #7dd3fc;
+  font-family: "Space Mono", monospace;
+  font-size: 2.8rem;
+  color: #93c5fd;
+  margin-bottom: 14px;
   text-align: center;
-  margin-bottom: 10px;
-  text-shadow: 0 0 15px rgba(125, 211, 252, 0.4);
+  text-shadow: 0 0 20px rgba(147, 197, 253, 0.45);
   z-index: 2;
 }
 
@@ -50,31 +51,33 @@ h1 {
 
 table {
   border-collapse: collapse;
-  width: 80%;
-  max-width: 700px;
+  width: 85%;
+  max-width: 850px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 0 30px rgba(125, 211, 252, 0.15);
-  backdrop-filter: blur(15px);
+  box-shadow: 0 0 40px rgba(125, 211, 252, 0.22);
+  backdrop-filter: blur(16px);
+  animation: float 5s ease-in-out infinite alternate;
   z-index: 2;
 }
 
 th,
 td {
   text-align: center;
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: #e2e8f0;
 }
 
 th {
-  background: rgba(37, 99, 235, 0.3);
+  background: rgba(96, 165, 250, 0.22);
   color: #e0f2fe;
   font-weight: 600;
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 0.5px;
+  font-family: "Space Mono", monospace;
+  letter-spacing: 0.7px;
+  text-shadow: 0 0 6px rgba(147, 197, 253, 0.4);
 }
 
 tr:hover {
@@ -82,7 +85,7 @@ tr:hover {
 }
 
 tr.updated {
-  background-color: rgba(34, 197, 94, 0.2) !important;
+  background-color: rgba(34, 197, 94, 0.25) !important;
   transition: background-color 1s ease;
 }
 
@@ -91,10 +94,9 @@ tr.updated.fade {
 }
 
 tbody tr {
-  transition: all 0.5s ease;
+  transition: all 0.4s ease;
 }
 
-/* ===== Floating glow animation ===== */
 @keyframes float {
   0% {
     transform: translateY(0);
@@ -104,21 +106,18 @@ tbody tr {
   }
 }
 
-table {
-  animation: float 5s ease-in-out infinite alternate;
-}
-
-/* ===== Subtle footer ===== */
 footer {
   margin-top: 30px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #94a3b8;
   text-align: center;
   z-index: 2;
 }
 
-/* ===== Z-Index Fix for layering ===== */
-h1, #updated, table, footer {
+h1,
+#updated,
+table,
+footer {
   position: relative;
   z-index: 2;
 }
