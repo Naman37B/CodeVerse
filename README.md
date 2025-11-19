@@ -5,7 +5,7 @@
 CodeVerse is a futuristic, real-time competitive coding platform designed for 1v1 battles. It connects developers in a virtual arena where they can challenge opponents to solve algorithmic problems under time pressure. Featuring a sleek, glassmorphism-inspired UI and seamless real-time synchronization, CodeVerse transforms standard coding practice into an intense e-sport experience.
 
 **Github link**
-link=https://github.com/Naman37B/CodeVerse
+=https://github.com/Naman37B/CodeVerse
 
 ---
 
