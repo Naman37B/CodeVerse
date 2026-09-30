@@ -125,3 +125,9 @@ codeverse/
     ├── signup.html         # Signup page HTML
     └── style.css           # Global styles
 ```
+<img width="2880" height="1800" alt="01-login" src="https://github.com/user-attachments/assets/717f141f-92f6-4aec-8097-394da49b3922" />
+<img width="2880" height="1800" alt="02-signup" src="https://github.com/user-attachments/assets/a3470e6c-10e6-4f2a-b9d1-83cc6b63e165" />
+<img width="2880" height="1800" alt="03-lobby" src="https://github.com/user-attachments/assets/070e7ae4-16a9-4755-9c81-1ae723595cc4" />
+<img width="2880" height="1800" alt="04-lobby-join-form" src="https://github.com/user-attachments/assets/d1434aa2-e510-4ec4-9864-807f312ec890" />
+<img width="2880" height="1800" alt="05-battle" src="https://github.com/user-attachments/assets/0ea80307-3395-4953-b246-82ddd66d38c9" />
+<img width="2880" height="1800" alt="06-leaderboard" src="https://github.com/user-attachments/assets/5ce69ea7-c406-4508-8acb-88e3f2639f77" />
